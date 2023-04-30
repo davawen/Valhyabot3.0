@@ -1,4 +1,4 @@
-import { Client, Events, GuildMember, GatewayIntentBits as Intent, MessageFlags, SlashCommandBuilder, VoiceBasedChannel } from "discord.js";
+import { Client, Events, GatewayIntentBits as Intent } from "discord.js";
 import { config as dotenv_config } from "dotenv";
 import { readdirSync } from "node:fs";
 

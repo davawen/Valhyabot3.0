@@ -2,7 +2,7 @@ import { EmbedBuilder, GuildMember, SlashCommandBuilder } from "discord.js";
 import ytdl from "ytdl-core";
 
 import { CommandManager } from "../command_manager";
-import { AudioPlayerStatus, VoiceConnectionStatus, createAudioPlayer, createAudioResource, joinVoiceChannel } from "@discordjs/voice";
+import { AudioPlayerStatus } from "@discordjs/voice";
 import { queue_manager } from "../queue";
 
 export function register(manager: CommandManager) {

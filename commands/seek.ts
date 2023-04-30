@@ -1,6 +1,5 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonComponent, ButtonInteraction, ButtonStyle, SlashCommandBuilder } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, SlashCommandBuilder } from "discord.js";
 import { CommandManager } from "../command_manager";
-import { setTimeout as wait } from "timers/promises";
 import { queue_manager } from "../queue";
 import { AudioPlayerStatus } from "@discordjs/voice";
 

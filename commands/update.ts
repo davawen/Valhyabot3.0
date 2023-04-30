@@ -1,6 +1,5 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonComponent, ButtonInteraction, ButtonStyle, SlashCommandBuilder } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, SlashCommandBuilder } from "discord.js";
 import { CommandManager } from "../command_manager";
-import { setTimeout as wait } from "timers/promises";
 
 export function register(manager: CommandManager) {
 	manager.add_command(
@@ -29,7 +28,7 @@ export function register(manager: CommandManager) {
 				});
 
 				try {
-					const confirmation = await response.awaitMessageComponent({ filter: () => true, time: 1000 });
+					const confirmation = await response.awaitMessageComponent({ time: 1000 });
 					await confirmation.update(`Ended after ${seconds}s.`);
 					break; 
 				} catch (e) {
