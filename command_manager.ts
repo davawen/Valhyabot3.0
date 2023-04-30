@@ -3,7 +3,7 @@ import { ApplicationCommand, ChatInputCommandInteraction, Client, REST, RESTPost
 type CommandJSON = RESTPostAPIChatInputApplicationCommandsJSONBody;
 type InteractionResponse = (interaction: ChatInputCommandInteraction) => void;
 
-class CommandManager {
+export class CommandManager {
 	/// Command name -> SlashCommandBuilder output
 	private unregistered_commands: Map<string, CommandJSON>;
 	/// Command name -> ApplicationCommand
@@ -48,5 +48,3 @@ class CommandManager {
 		return this.funcs.get(name);
 	}
 }
-
-export let manager = new CommandManager();
