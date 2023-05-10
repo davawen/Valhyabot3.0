@@ -56,8 +56,6 @@ export function register(manager: CommandManager) {
 
 			const response = await interaction.reply({ components: rows() });
 
-			list.setDisabled(true);
-			cancel.setDisabled(true);
 			try {
 				let skip = await response.awaitMessageComponent({ time: 60000 });
 				let update: string;
@@ -75,8 +73,12 @@ export function register(manager: CommandManager) {
 					update = `Canceled skip.`;
 				}
 
+				list.setDisabled(true);
+				cancel.setDisabled(true);
 				skip.update({ content: update, components: rows() });
 			} catch (e) { 
+				list.setDisabled(true);
+				cancel.setDisabled(true);
 				response.edit({ content: `Skip timed out.`, components: rows() });
 			}
 		}

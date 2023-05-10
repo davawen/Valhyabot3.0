@@ -6,6 +6,7 @@ export class Queue {
 	guild: Guild;
 	player: AudioPlayer;
 	resource: AudioResource | null;
+	current_song: ytdl.videoInfo | null;
 
 	songs: ytdl.videoInfo[];
 	destroyed: boolean;
@@ -14,6 +15,7 @@ export class Queue {
 		this.guild = guild;
 		this.player = createAudioPlayer();
 		this.resource = null;
+		this.current_song = null;
 		this.songs = [];
 		this.destroyed = false;
 
@@ -39,13 +41,13 @@ export class Queue {
 	}
 
 	play() {
-		let new_song = this.get_next();
-		if (new_song === null) { // stop player
+		this.current_song = this.get_next();
+		if (this.current_song === null) { // stop player
 			queue_manager.remove(this.guild.id);
 			return;
 		}
 
-		const stream = ytdl.downloadFromInfo(new_song, { 
+		const stream = ytdl.downloadFromInfo(this.current_song, { 
 			dlChunkSize: 100000,
 			filter: 'audioonly', quality: "highestaudio"
 		});
