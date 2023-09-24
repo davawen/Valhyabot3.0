@@ -49,7 +49,7 @@ export class Queue {
 
 		const stream = ytdl.downloadFromInfo(this.current_song, { 
 			dlChunkSize: 100000,
-			filter: 'audioonly', quality: "lowestaudio"
+			filter: 'audioonly', quality: "highestaudio"
 		});
 		this.resource = createAudioResource(stream);
 		this.player.play(this.resource);
