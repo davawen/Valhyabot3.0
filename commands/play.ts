@@ -1,5 +1,6 @@
-import { EmbedBuilder, GuildMember, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, ComponentType, EmbedBuilder, GuildMember, SlashCommandBuilder } from "discord.js";
 import ytdl from "ytdl-core";
+import search from "yt-search";
 
 import { CommandManager } from "../command_manager";
 import { AudioPlayerStatus } from "@discordjs/voice";
@@ -10,11 +11,33 @@ export function register(manager: CommandManager) {
 		new SlashCommandBuilder()
 			.setName("play")
 			.setDescription("Play's a youtube video audio in the user's channel")
-			.addStringOption(option => option.setName("url").setDescription("the video's url").setRequired(true)),
+			.addSubcommand(subcommand => subcommand
+				.setName("url")
+				.setDescription("add a video with a url or id")
+				.addStringOption(option => option.setName("url").setDescription("the video's url").setRequired(true))
+			)
+			.addSubcommand(subcommand => subcommand
+				.setName("search")
+				.setDescription("search youtube videos")
+				.addStringOption(option => option.setName("query").setDescription("youtube search term").setRequired(true))
+			)
+		,
 		async interaction => {
-			const url = interaction.options.getString("url") ?? "";
-
 			if (interaction.guild === null) return;
+
+			let url: string;
+			if (interaction.options.getSubcommand(true) == "url") {
+				url = interaction.options.getString("url", true);
+			} else {
+				let query = interaction.options.getString("query", true);
+				let result = await search(query);
+
+				if (result.videos.length == 0) {
+					await interaction.reply({ content: "No search result for the given query", ephemeral: true })
+				}
+
+				url = result.videos[0].url;
+			}
 
 			if (!ytdl.validateURL(url)) {
 				await interaction.reply({ content: "Invalid url given.", ephemeral: true });
