@@ -37,11 +37,11 @@ export function register(manager: CommandManager) {
 			let list = new StringSelectMenuBuilder()
 				.setCustomId('list')
 				.setPlaceholder("Choose a song to skip to.")
-				.addOptions(queue.songs.map((song, index) => {
+				.addOptions(queue.songs.map(song => {
 					return new StringSelectMenuOptionBuilder()
-						.setLabel(song.videoDetails.title)
-						.setDescription(`Lasts ${song.videoDetails.lengthSeconds} seconds.`)
-						.setValue(index.toString());
+						.setLabel(song.info.videoDetails.title)
+						.setDescription(`Lasts ${song.info.videoDetails.lengthSeconds} seconds.`)
+						.setValue(song.unique_id);
 				}));
 
 			let cancel = new ButtonBuilder()
@@ -60,15 +60,16 @@ export function register(manager: CommandManager) {
 				let skip = await response.awaitMessageComponent({ time: 60000 });
 				let update: string;
 				if (skip.isStringSelectMenu()) {
-					let value = parseInt(skip.values[0]);
-					let name = queue.songs[value].videoDetails.title;
-
-					for (let i = 0; i < value; i++) {
-						queue.songs.shift();
+					let value = skip.values[0];
+					let idx = queue.songs.findIndex(song => song.unique_id == value);
+					if (idx == -1) {
+						update = `Music doesn't exist anymore.`;
+					} else {
+						queue.songs.splice(0, idx-1);
+						let name = queue.songs[0].info.videoDetails.title;
+						queue.play();
+						update = `Skipped to **${name}**.`;
 					}
-					queue.play();
-
-					update = `Skipped to **${name}**.`;
 				} else { // clicked button
 					update = `Canceled skip.`;
 				}

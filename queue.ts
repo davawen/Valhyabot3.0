@@ -1,14 +1,21 @@
 import { AudioPlayer, AudioPlayerStatus, AudioResource, VoiceConnectionStatus, createAudioPlayer, createAudioResource, getVoiceConnection, joinVoiceChannel } from "@discordjs/voice";
 import { Guild } from "discord.js";
 import ytdl from "ytdl-core";
+import { randomUUID } from "crypto"
+
+export type Song = {
+	info: ytdl.videoInfo,
+	/// This ID is unique to every song added, even if they are from the same music
+	unique_id: string
+}
 
 export class Queue {
 	guild: Guild;
 	player: AudioPlayer;
 	resource: AudioResource | null;
-	current_song: ytdl.videoInfo | null;
+	current_song: Song | null;
 
-	songs: ytdl.videoInfo[];
+	songs: Song[];
 	destroyed: boolean;
 
 	constructor(guild: Guild, voice_channel: string) {
@@ -47,9 +54,9 @@ export class Queue {
 			return;
 		}
 
-		const stream = ytdl.downloadFromInfo(this.current_song, { 
+		const stream = ytdl.downloadFromInfo(this.current_song.info, { 
 			dlChunkSize: 100000,
-			filter: 'audioonly', quality: "highestaudio"
+			filter: 'audioonly', quality: "highestaudio",
 		});
 		this.resource = createAudioResource(stream);
 		this.player.play(this.resource);
@@ -68,7 +75,10 @@ export class Queue {
 	async add_song(url: string): Promise<ytdl.videoInfo | null> {
 		try {
 			let info = await ytdl.getInfo(url);
-			this.songs.push(info);
+			this.songs.push({
+				info: info,
+				unique_id: randomUUID()
+			});
 
 			return info;
 		} catch (e) {
@@ -77,7 +87,7 @@ export class Queue {
 	}
 
 	/// Returns the next song to play (first in queue) or null if the queue is empty
-	get_next(): ytdl.videoInfo | null {
+	get_next(): Song | null {
 		return this.songs.shift() ?? null;
 	}
 

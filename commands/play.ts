@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, ComponentType, EmbedBuilder, GuildMember, SlashCommandBuilder } from "discord.js";
+import { EmbedBuilder, GuildMember, SlashCommandBuilder } from "discord.js";
 import ytdl from "ytdl-core";
 import search from "yt-search";
 
